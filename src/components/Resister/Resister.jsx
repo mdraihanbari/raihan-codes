@@ -1,9 +1,12 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import auth from "../../Firebase/firebase.init";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 
 const Resister = () => {
+
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleToResister = e =>{
     e.preventDefault();
@@ -11,12 +14,16 @@ const Resister = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
     console.log(email, password);
+
+    setErrorMessage('')
+
     createUserWithEmailAndPassword(auth, email, password)
     .then(res =>{
-      console.log(res)
+      console.log(res.user)
     })
-    .then(error=>{
-      console.log(  'ERROR', error)
+    .catch(error=>{
+      console.log(  'ERROR', error.message)
+      setErrorMessage(error.message)
     })
     
   }
@@ -38,6 +45,7 @@ const Resister = () => {
             </svg>
             <input type="text" className="grow" name="email" placeholder="Email" />
           </label>
+          
           <label className="input input-bordered flex items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +61,11 @@ const Resister = () => {
             </svg>
             <input type="password" name="password" className="grow" placeholder="Password" />
           </label>
+          {
+            errorMessage && <p className="text-red-700 font-semibold mt-2 ">{'Akta Email Koy Bar Use Korbi !! '}</p>
+          }
           <button className="btn btn-wide btn-accent  my-5 text-center">Resister </button>
+          
           <p>Alrady an account <Link className="font-bold pl-3 hover:underline" to="/signUp">Sign Up</Link> or <Link className="font-bold pl-3" to="/login">Login</Link> </p>
         </form>
       </div>
